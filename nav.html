@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<style type="text/css">
+
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			html,body{
+				font-size:16px;
+				height:100%;
+				box-sizing: border-box;
+				background-color: #eee;
+
+			}
+			input{
+				font-size: 16px;
+				-webkit-appearance:none;
+				appearance: none;
+				-webkit-tap-highlight-color: rgba(0,0,0,0);
+				border-radius: 0;
+				border:1px solid #dcd;
+			}
+			.btnwrap{
+				display:box;
+				display: -webkit-box;
+				width: 100%;
+				box-flex: 1.0;
+				-webkit-box-flex: 1.0;
+
+			}
+			nav{
+				box-flex: 1.0;
+				-webkit-box-flex: 1.0;
+			}
+			#wrap{
+				display:box;
+				display: -webkit-box;
+				width: 100%;
+				height:100%;
+				box-orient: vertical;
+				-webkit-box-orient: vertical;
+
+			}
+			.btn{
+				/*width:80px;*/
+				display: block;
+				height:38px;
+				line-height: 38px;
+				color:#fff;
+				box-flex: 1.0;
+				-webkit-box-flex: 1.0;
+				/*padding: 5px;*/
+				/*border-radius: 5px;*/
+			/*	border-top-right-radius: 5px;
+				border-top-left-radius: 5px*/
+				outline: none;
+				border:none;
+				appearance: none;
+				-webkit-tap-highlight-color:rgba(0,0,0,0);
+				margin: 0;
+				padding: 0;	
+				padding: 0 5px;
+
+				position: relative;
+				/*top:1px;*/
+				left: 0;
+			}
+			.bg{
+				box-flex: 1.0;
+				-webkit-box-flex: 1.0;
+				display: -webkit-box;
+				animation:2s  root infinite;
+				transform-style: preserve-3d;
+				/*backface-visibility: hidden;*/xxxxx
+				/*-webkit-box-pack: center;*/
+				/*-webkit-box-align: center;*/
+				color:#000;
+				border-radius: 50%;
+			}
+		/*	@-webkit-keyframes root{
+				0{
+					/*transform:translate3d(0,0,0);*/
+				/*	transform:translateZ(-500px);
+				}
+				100%{
+					transform: rotateZ(360deg)
+				}
+			}*/
+
+	</style>
+</head>
+<body>
+	<div id="wrap"></div>
+	
+</body>
+<script type="text/javascript" src="js/react.js"></script>
+<script type="text/javascript" src="js/JSXTransformer.js"></script>
+<script type="text/jsx">
+		var iheight=document.body.clientHeight||document.documentElement.clientHeight;
+		iheight=iheight-38;
+		var Nav=React.createClass({
+			getInitialState:function(){
+				return({
+					bgColor:'default',
+					tittle:'default'
+				})
+			},
+			chooseColor:function(e){
+				this.setState({
+					bgColor:e.target.value,
+					tittle:e.target.getAttribute("data-tittle")
+				})
+				
+			},	
+			render:function(){
+			 console.log(this.props.bttr);
+			 	var self=this;
+				return(
+					<nav>
+						<div className="btnwrap">
+						{
+							this.props.bttr.map(function(item,i){
+									console.log(item);
+
+								return(
+									
+									<input className="btn" type="button"  style={{backgroundColor:item.color}} value={item.color} onClick={self.chooseColor} data-tittle={item.tittle}/>
+								
+								)
+								
+							})
+						}
+						</div>
+						<Bg bgColor={self.state.bgColor} tittle={self.state.tittle}  />
+					</nav>
+						
+				)
+			}
+
+
+		})
+		var  Bg=React.createClass({
+			render:function(){
+				if(this.props.bgColor!='default')
+				{
+					return(
+					<div className="bg" style={{backgroundImage:'-webkit-radial-gradient(center center,#333,'+this.props.bgColor+')',height:iheight}}>
+						你选择了<span>{this.props.tittle}</span>
+					</div>
+					)
+				}else{
+					return(
+					<div className="bg" style={{backgroundColor:this.props.bgColor,height:iheight}}>
+						你没选择任何颜色
+					</div>
+					)
+				}
+				
+			}
+
+		})
+		var bgColorList=[
+			{color:'purple',tittle:'紫色'},
+			{color:'blue',tittle:'蓝色'},
+			{color:'pink',tittle:'粉色'},
+			{color:'yellow',tittle:'黄色'},
+			{color:'skyblue',tittle:'天蓝色'},
+			{color:'grey',tittle:'灰色'},
+			{color:'orange',tittle:'橘色'}
+
+		];
+		var tabNav=React.render(<Nav  bttr={bgColorList}/>,document.getElementById("wrap"));
+
+</script>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<style type="text/css">
+
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	html,body{
+		width: 100%;
+		max-width:680px;
+		min-width: 320px;
+	}
+	body{
+		height:100%;
+		overflow: hidden;
+		max-width:680px;
+		min-width: 320px;
+	}
+	.slidewrap{
+			overflow:hidden;
+			height:100%;
+			width:100%;
+	}
+	img{
+		/*float:left;*/
+		/*width: 25%;*/
+		width: 100%;
+		border-radius: 0;
+		border:none;
+		vertical-align: top;
+		/*width: 60px;*/
+	}
+	ul,li{
+		list-style: none;
+	}
+	ul{
+		height:100%;
+		position: absolute;
+		left: 0;
+		top:0;
+		display: box;
+		display: -webkit-box;
+	}
+	li{
+		display: box;
+		display: -webkit-box;
+		box-pack: center;
+		box-align: center;
+		-webkit-box-align: center;
+		-webkit-box-pack: center;
+		/*background-color:rgba(0,0,0,0.5);*/
+		border:none;
+	}
+	.page{
+		display: inline-block;
+		text-decoration: none;
+		background-color: #fff;
+		height:15px;
+		width: 15px;
+		border-radius: 50%;
+		margin:10px;
+	}
+	.boxshow{
+		display: inline-block;
+		text-decoration: none;
+		/*background-color: #fff;*/
+		height:15px;
+		width: 15px;
+		border-radius: 50%;
+		margin:10px;
+		background-color:blue;
+	}
+	.pageWrap{
+		width: 100%;
+		position: fixed;
+		bottom: 30px;
+		left: 0;
+		right: 0;
+
+	}
+	</style>
+</head>
+<body>
+	<h1>nativeEvent</h1>
+	<div id="wrap"></div>
+</body>
+<script type="text/javascript" src="js/react.js"></script>
+<script type="text/javascript" src="js/JSXTransformer.js"></script>
+<script type="text/jsx">
+	var Slider=React.createClass({
+		getInitialState:function(){
+				return({
+					index:0,
+					clientX:0,
+					items:[]
+				})
+		},
+		touchStart:function(e){
+			e.preventDefault();
+			console.log(e.nativeEvent.touches);
+			console.log(e.nativeEvent.touches);
+			console.log(e.nativeEvent.touches[0].clientX);
+			this.setState({
+				clientX:e.nativeEvent.touches[0].clientX
+			})
+			console.log(e.nativeEvent.touches[0].clientY);
+			
+
+		},
+		touchMove:function(e){
+			e.preventDefault();
+			var count=e.target.getAttribute("data-key");
+			var _this=this;
+			var offsetX=this.state.clientX;
+			console.log(e.nativeEvent.touches[0].clientX);
+			console.log(e.nativeEvent.touches[0].clientY);
+			if(e.nativeEvent.touches[0].clientX-offsetX>20)
+			{
+				count++;
+				if(count>6)
+				{
+					e.stopPropagation();
+					_this.setState({
+						index:0
+					})
+				}else{
+					_this.setState({
+							index:count*100
+					})
+				}
+			}else if(e.nativeEvent.touches[0].clientX-offsetX<-20){
+				count--;
+				if(count<0){
+					e.stopPropagation();
+					_this.setState({
+							index:(this.props.slidecount-1)*100
+					})
+				}else{
+					_this.setState({
+							index:count*100
+					})
+				}
+			}else{
+				e.stopPropagation();
+			}
+			console.log(this.state.index);
+		},
+		touchEnd:function(){
+			this.setState({
+				clientX:0
+			})
+		},
+		pageChange:function(item){
+				
+			this.setState({
+
+				index:item*100
+			})
+		},
+		render:function(){
+		var self=this;
+			return(
+				<div className="slidewrap">			
+				{
+				<ul style={{width:this.props.slidecount*100+"%",left:-this.state.index+"%"}}>
+					{
+							self.props.imgList.map(function(item,i){
+								return(
+									<li data-key={i} onTouchMove={self.touchMove}  onTouchStart={self.touchStart} onTouchEnd={self.touchEnd}
+									style={{width:100/self.props.slidecount+"%",backgroundColor:'rgba(0,0,0,1)',backgroundImage:'url('+item.img+')',backgroundSize:'100%'+' '+' auto',backgroundPosition:'center'+' '+'center',backgroundRepeat:"no-repeat"}}>
+									</li>
+								)
+								
+							})
+					}
+				</ul>	
+				}
+				<PageNation slidecount={this.props.imgList} index={this.state.index} pagechange={this.pageChange}/>
+				</div>
+			)
+		}
+	});
+	var PageNation=React.createClass({
+		handlerClick:function(e){
+			e.preventDefault();
+			console.log(e.target);
+			var newIndex=e.target.getAttribute("data-key");
+			this.props.pagechange(newIndex);
+		},
+		render:function(){
+			var self=this;
+			return(
+				<div style={{textAlign:'center'}} className="pageWrap">
+					{
+						this.props.slidecount.map(function(item,i){
+							
+								return(
+									<span  data-key={i}  className="page" onClick={self.handlerClick}></span>
+								)
+							
+						})
+						 
+					}
+				</div>
+			)
+
+		}
+			
+
+
+	})
+
+
+
+
+var imgList=[
+	{'img':'img/1.jpg'},{'img':'img/2.jpg'},{'img':'img/3.jpg'},{'img':'img/4.jpg'},{'img':'img/5.jpg'},{'img':'img/6.jpg'},{'img':'img/7.jpg'}
+]; 
+var slide=React.render(<Slider  imgList={imgList} slidecount={imgList.length}/>,document.getElementById("wrap"));
+</script>
+		 
+</html>
